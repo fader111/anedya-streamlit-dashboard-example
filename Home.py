@@ -40,6 +40,9 @@ current_temp_data_datetime = 0
 def main():
     global humidityData, temperatureData,current_temp_data_datetime
 
+    # Always skip login and show dashboard
+    st.session_state.LoggedIn = True
+
     success = anedya_config(nodeId, apiKey)
     if not success:
         st.stop()
@@ -49,10 +52,10 @@ def main():
         st.session_state.LoggedIn = False
 
     if "FanButtonText" not in st.session_state:
-        st.session_state.FanButtonText = "Turn Fan On!"
+        st.session_state.FanButtonText = "Включить"
 
     if "LightButtonText" not in st.session_state:
-        st.session_state.LightButtonText = "Turn Light On!"
+        st.session_state.LightButtonText = "Выключить"
 
     if "LightState" not in st.session_state:
         st.session_state.LightState = False
@@ -94,13 +97,13 @@ def main():
         st.session_state.var_auto_update_time_range = True
 
     if "chart_box_1_name" not in st.session_state:
-        st.session_state.chart_box_1_name = "Humidity"
+        st.session_state.chart_box_1_name = "Влажность"
 
     if "chart_box_2_name" not in st.session_state:
-        st.session_state.chart_box_2_name = "Temperature"
+        st.session_state.chart_box_2_name = "Температура"
 
     if "device_status" not in st.session_state:
-        st.session_state.device_status = "Offline"
+        st.session_state.device_status = "Оффлайн"
 
         
     if st.session_state.LoggedIn is False:
@@ -111,9 +114,9 @@ def main():
         deviceState=anedya_getDeviceStatus()
         if deviceState[1]:
             if deviceState[0]:
-                st.session_state.device_status = "Online"
+                st.session_state.device_status = "Онлайн"
             else:
-                st.session_state.device_status = "Offline"                
+                st.session_state.device_status = "Онлайн"                
 
         res_humidity = anedya_get_latestData("humidity")
         if res_humidity[0] is None:
@@ -171,25 +174,25 @@ def drawLogin():
 def drawDashboard():
     headercols = st.columns([1, 0.1, 0.1,0.1], gap="small")
     with headercols[0]:
-        st.title("Anedya Demo Dashboard", anchor=False)
+        st.title("Ваши данные всегда под рукой из любой локации", anchor=False)
     with headercols[1]:
         # st.status("online",state="complete")
         st.button(label=st.session_state.device_status)
     with headercols[2]:
-        st.button("Refresh")
+        st.button("Обновить")
     with headercols[3]:
-        logout = st.button("Logout")
+        logout = st.button("Выйти")
 
     if logout:
         st.session_state.LoggedIn = False
         st.rerun()
 
     st.markdown(
-        "This dashboard provides live view of the Anedya's Office. Also allowing you to control the Light and Fan remotely!"
+        "Данные обновлены..."
     )
     org_subheading=st.columns([0.4,1,1],vertical_alignment="bottom")
     with org_subheading[0]:
-        st.subheader(body="Current Status:", anchor=False)
+        st.subheader(body="Текущее состояние:", anchor=False)
     with org_subheading[1]:
         st.write(current_temp_data_datetime)
     cols = st.columns(2, gap="medium", vertical_alignment="center")
@@ -198,7 +201,7 @@ def drawDashboard():
             # st.metric(label="Humidity", value=str(st.session_state.CurrentHumidity) + " %")
             streamviz.gauge(
                 gVal=(st.session_state.CurrentHumidity) / 100,
-                gTitle="Humidity",
+                gTitle="Влажность",
                 gMode="gauge+number",
                 gSize="MED",
                 grLow=30,
@@ -212,7 +215,7 @@ def drawDashboard():
         with st.container(height=270, border=False):
             streamviz.gauge(
                 gVal=st.session_state.CurrentTemperature,
-                gTitle="Temperature",
+                gTitle="Температура",
                 gMode="gauge+number",
                 gSize="MED",
                 grLow=40,
@@ -230,32 +233,32 @@ def drawDashboard():
     # #    st.metric(label="Refresh Count", value=count)
     #     pass
 
-    st.subheader(body="Controls", anchor=False)
+    st.subheader(body="Управление", anchor=False)
     buttons = st.columns([0.4,0.4,1], gap="small")
     with buttons[0]:
         org_btn1=st.columns([0.4,0.6], gap="small",vertical_alignment="center")
         with org_btn1[0]:
-            st.text("Control Fan:")
+            st.text("Вентилятор:")
         with org_btn1[1]:
             st.button(label=st.session_state.FanButtonText, on_click=operateFan)
 
     with buttons[1]:
         org_btn2=st.columns([0.47,0.53], gap="small",vertical_alignment="center")
         with org_btn2[0]:
-            st.text("Control Light:")
+            st.text("Свет:")
         with org_btn2[1]:
             st.button(label=st.session_state.LightButtonText, on_click=operateLight)
 
 #-----------------------------------------Time range filter-----------------------------------------
     with st.container():
-        st.subheader(body="Time Range", anchor=False)
+        st.subheader(body="Временной диапазон", anchor=False)
         datetime_cols = st.columns([1,1,0.2], gap="small", vertical_alignment="bottom")
 
         with datetime_cols[0]:
             from_cols=st.columns(2, gap="small")
             with from_cols[0]:
                 # st.text("From:")
-                from_start_datetime=st.date_input('From',key="from:date",value=st.session_state.from_date)
+                from_start_datetime=st.date_input('От',key="from:date",value=st.session_state.from_date)
             with from_cols[1]:
                 from_time_input=st.time_input('time',key="from:time",value=st.session_state.from_time,label_visibility="hidden")
 
@@ -281,7 +284,7 @@ def drawDashboard():
             to_cols=st.columns(2)
             with to_cols[0]:
                 # st.text("To:")
-                to_start_datetime=st.date_input('To',key="to:date",value=st.session_state.to_date)
+                to_start_datetime=st.date_input('До',key="to:date",value=st.session_state.to_date)
             with to_cols[1]:
                 to_time_input=st.time_input('time',key="to:time",value=st.session_state.to_time,label_visibility="hidden")
             if to_start_datetime and to_time_input:
@@ -309,7 +312,7 @@ def drawDashboard():
             auto_update_time_range(False)
 
         with datetime_cols[2]:
-            reset_btn=st.button(label="Set Default", on_click=reset_time_range)
+            reset_btn=st.button(label="По умолчанию", on_click=reset_time_range)
             if reset_btn:
                 auto_update_time_range(True)
                 # st.rerun()
@@ -357,9 +360,10 @@ def drawDashboard():
             st.warning("  'To' should be greater than 'From'",icon="⚠️")
     # ----------------------- Map Container------------------------------------            
     with st.container():
-        st.subheader(body="Device Location", anchor=False)
+        st.subheader(body="Расположение", anchor=False)
         locationData = pd.DataFrame(
-            {"latitude": [23.074214884363126], "longitude": [72.52071042512968]}
+            # {"latitude": [23.074214884363126], "longitude": [72.52071042512968]}
+            {"latitude": [55.745341], "longitude": [37.662344]}
         )
         st.map(
             locationData, zoom=16, color="#0044ff", size=14, use_container_width=True
@@ -369,30 +373,30 @@ def operateFan():
     if st.session_state.FanState is False:
         anedya_sendCommand("Fan", "ON")
         anedya_setValue("Fan", True)
-        st.session_state.FanButtonText = "Turn Fan Off!"
+        st.session_state.FanButtonText = "Выключить"
         st.session_state.FanState = True
-        st.toast("Fan turned on!")
+        st.toast("Вентилятор включен")
     else:
-        st.session_state.FanButtonText = "Turn Fan On!"
+        st.session_state.FanButtonText = "Включить"
         st.session_state.FanState = False
         anedya_sendCommand("Fan", "OFF")
         anedya_setValue("Fan", False)
-        st.toast("Fan turned off!")
+        st.toast("Вентилятор выключен")
 
 
 def operateLight():
     if st.session_state.LightState is False:
         anedya_sendCommand("Light", "ON")
         anedya_setValue("Light", True)
-        st.session_state.LightButtonText = "Turn Light Off!"
+        st.session_state.LightButtonText = "Выключить "
         st.session_state.LightState = True
-        st.toast("Light turned on!")
+        st.toast("Свет включен")
     else:
         anedya_sendCommand("Light", "OFF")
         anedya_setValue("Light", False)
-        st.session_state.LightButtonText = "Turn Light On!"
+        st.session_state.LightButtonText = "Включить"
         st.session_state.LightState = False
-        st.toast("Light turned off!")
+        st.toast("Свет выключен")
 
 
 @st.cache_data(ttl=4, show_spinner=False)
@@ -402,10 +406,10 @@ def GetFanStatus() -> list:
         on = value[0]
         if on:
             st.session_state.FanState = True
-            st.session_state.FanButtonText = "Turn Fan Off!"
+            st.session_state.FanButtonText = "Выключить "
         else:
             st.session_state.FanState = False
-            st.session_state.FanButtonText = "Turn Fan On!"
+            st.session_state.FanButtonText = "Включить"
     return value
 
 @st.cache_data(ttl=4, show_spinner=False)
@@ -415,10 +419,10 @@ def GetLightStatus() -> list:
         on = value[0]
         if on:
             st.session_state.LightState = True
-            st.session_state.LightButtonText = "Turn Light Off!"
+            st.session_state.LightButtonText = "Выключить  "
         else:
             st.session_state.LightState = False
-            st.session_state.LightButtonText = "Turn Light On!"
+            st.session_state.LightButtonText = "Включить"
     return value
 def auto_update_time_range(param_hold_or_start: bool = True):
     # st.session_state.counter=st.session_state.counter+1

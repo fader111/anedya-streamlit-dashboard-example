@@ -40,7 +40,7 @@ def humidity_chart(param_humidity_data):
                 y=alt.Y(
                     "aggregate:Q",
                     scale=alt.Scale(domain=[20, 100]),
-                    axis=alt.Axis(title="Humidity (%)", grid=True, tickCount=10),
+                    axis=alt.Axis(title="Влажность (%)", grid=True, tickCount=10),
                 ),  # Q indicates quantitative data
                 tooltip=[
                     alt.Tooltip(
@@ -96,7 +96,7 @@ def temperature_chart(param_temperature_data):
                     # scale=alt.Scale(domain=[0, 100]),
                     scale=alt.Scale(zero=False, domain=[10, 50]),
                     axis=alt.Axis(
-                        title="Temperature (°C)", grid=True, tickCount=10
+                        title="Температура (°C)", grid=True, tickCount=10
                     ),
                 ),  # Q indicates quantitative data
                 tooltip=[
