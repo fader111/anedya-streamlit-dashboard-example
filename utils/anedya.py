@@ -35,7 +35,7 @@ def anedya_setValue(KEY, VALUE):
 
 def anedya_getValue(KEY):
     # Simulate getting a value
-    print(f"Simulated getValue: {KEY}")
+    # print(f"Simulated getValue: {KEY}")
     return [True, 1]
 
 
@@ -91,6 +91,7 @@ def fetchHumidityData(
         param_to=param_to,
         param_aggregation_interval_in_minutes=param_aggregation_interval_in_minutes,
     )
+    # print(f"debug resp{json.dumps(response_message[0])}")
     if response_message[1] == 200:
         data_list = []
         response_data = json.loads(response_message[0]).get("data")
