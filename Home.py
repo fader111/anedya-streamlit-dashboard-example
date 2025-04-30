@@ -36,6 +36,7 @@ humidityData = pd.DataFrame()
 temperatureData = pd.DataFrame()
 current_temp_data_datetime = 0
 
+moscow_tz = pytz.timezone('Europe/Moscow')
 
 def main():
     global humidityData, temperatureData,current_temp_data_datetime
