@@ -36,7 +36,6 @@ humidityData = pd.DataFrame()
 temperatureData = pd.DataFrame()
 current_temp_data_datetime = 0
 
-moscow_tz = pytz.timezone('Europe/Moscow')
 
 def main():
     global humidityData, temperatureData,current_temp_data_datetime
@@ -132,8 +131,8 @@ def main():
 
         # Convert epoch time to datetime
         epoch_time = res_tem[1]
-        indian_time_zone = pytz.timezone('Asia/Kolkata')
-        unforamted_current_temp_data_datetime = datetime.fromtimestamp(epoch_time, indian_time_zone)
+        moscow_time_zone = pytz.timezone('Europe/Moscow')
+        unforamted_current_temp_data_datetime = datetime.fromtimestamp(epoch_time, moscow_time_zone)
         current_temp_data_datetime=unforamted_current_temp_data_datetime.strftime('%Y-%m-%d %H:%M:%S %Z')
 
         interval=st.session_state.to_input_time - st.session_state.from_input_time
@@ -270,7 +269,7 @@ def drawDashboard():
                 combined_datetime = pd.to_datetime(f"{from_start_datetime} {from_time_input}")
                 # st.write("Combined datetime:", combined_datetime)
                 # Define the India time zone
-                india_tz = pytz.timezone('Asia/Kolkata')
+                india_tz = pytz.timezone('Europe/Moscow')
 
                 # Localize the combined datetime to the India time zone
                 localized_datetime = india_tz.localize(combined_datetime)
@@ -295,7 +294,7 @@ def drawDashboard():
                 # st.write("Combined datetime:", combined_datetime)
 
                 # Define the India time zone
-                india_tz = pytz.timezone('Asia/Kolkata')
+                india_tz = pytz.timezone('Europe/Moscow')
 
                 # Localize the combined datetime to the India time zone
                 localized_datetime = india_tz.localize(combined_datetime)
@@ -442,8 +441,8 @@ def is_within_tolerance(time1, time2, tolerance=timedelta(seconds=60)):
 def get_default_time_range():
     
     # Get the current date and time in the Indian time zone
-    indian_time_zone = pytz.timezone('Asia/Kolkata')
-    current_date = datetime.now(indian_time_zone)
+    moscow_time_zone = pytz.timezone('Europe/Moscow')
+    current_date = datetime.now(moscow_time_zone)
 
     # Extract the year, month, and day
     current_year = current_date.year
