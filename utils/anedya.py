@@ -41,8 +41,13 @@ def anedya_getValue(KEY):
 
 @st.cache_data(ttl=15, show_spinner=False)
 def anedya_get_latestData(param_variable_identifier: str) -> list:
-    # Simulate latest data
-    value = round(random.uniform(20, 30), 2)
+    # Simulate latest data with correct range for temperature and humidity
+    if param_variable_identifier == "temperature":
+        value = round(random.uniform(22, 26), 2)
+    elif param_variable_identifier == "humidity":
+        value = round(random.uniform(20, 50), 2)
+    else:
+        value = round(random.uniform(20, 30), 2)
     timestamp = int(time.time())
     return [value, timestamp]
 
