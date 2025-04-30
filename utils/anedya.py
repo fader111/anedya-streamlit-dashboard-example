@@ -53,15 +53,21 @@ def anedya_getData(
     param_to: int,
     param_aggregation_interval_in_minutes: float,
 ) -> list:
-    # Simulate aggregated data
+    # Simulate aggregated data with different ranges for temperature and humidity
     data = {}
     current = param_from
+    if param_variable_identifier == "temperature":
+        min_val, max_val = 22, 26
+    elif param_variable_identifier == "humidity":
+        min_val, max_val = 20, 50
+    else:
+        min_val, max_val = 20, 30  # default range
     while current <= param_to:
         ts = str(current)
         data[ts] = [
             {
                 "timestamp": current,
-                "aggregate": round(random.uniform(20, 30), 2)
+                "aggregate": round(random.uniform(min_val, max_val), 2)
             }
         ]
         current += int(param_aggregation_interval_in_minutes * 60)
