@@ -20,7 +20,7 @@ from utils.anedya import anedya_getDeviceStatus
 nodeId = ""  # get it from anedya dashboard -> project -> node
 apiKey = ""  # aneyda project apikey
 
-st.set_page_config(page_title="Anedya IoT Dashboard", layout="wide")
+st.set_page_config(page_title="AIHelper24", layout="wide")
 
 refresh_interval = 30000
 st_autorefresh(interval=refresh_interval, limit=None, key="auto-refresh-handler")
